@@ -1,10 +1,10 @@
 const RPC = require('discord-rich-presence')('409416236519260171');
 
 RPC.updatePresence({
-    state: 'By DELUUXE.NL',
+    state: ':D',
     details: 'integration for RazerChroma',
     largeImageKey: 'discordchroma',
-    largeImageDetails: "DiscordChroma",
+    largeImageDetails: "Discord With Razor",
     instance: true,
 });
 

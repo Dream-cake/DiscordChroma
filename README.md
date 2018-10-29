@@ -9,3 +9,7 @@ BUT thats not very likely because it only listens for events and doesn't do anyt
 and my app would fall outside of their statement here Discord Support page,
 judge for your self.
 You have been warned.
+
+#PLEASE READ
+
+This project is now being worked on by Spooder (Spooder#1111) with full permission from DELUUXE (DELUUXE#1608)

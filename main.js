@@ -21,6 +21,11 @@ const Discord = require('discord.js');
 let client = null;
 var DiscordRP = null;
 
+var notifier = new WindowsToaster({
+    withFallback: false, // Fallback to Growl or Balloons?
+});
+
+
 
 let authWindow = null;
 let token = null;
@@ -34,6 +39,8 @@ var urError = 0;
 var ECONNRESET = 0;
 var token1 = null;
 var color_var = 16777215;
+
+let userStatus;
 
 var spamProtection = false;
 
@@ -64,7 +71,8 @@ log.transports.file.stream = fs.createWriteStream(path.join(app.getPath(`userDat
 
 
 // Register the app
-const chroma = new ChromaApp("DiscordChroma", "discord integration for razer chroma", "DELUUXE", "info@deluuxe.nl");
+const chroma = new ChromaApp("DiscordChroma", "discord integration for razer chroma", "Spooder", "Spooder@dreaming.ga");
+
 
 /*chroma.Instance().then((instance) => {
     //instance.playAnimation(new BcaAnimation("BcaAnimations/animation.bca"));
@@ -185,9 +193,8 @@ function login() {
 
     client.on('ready', () => {
         log.info(`Logged in as ` + client.user.tag);
-        var notifier = new WindowsToaster({
-            withFallback: false, // Fallback to Growl or Balloons?
-        });
+        userStatus = client.user.settings.status;
+        startupAnimation()
         //show running notification
         notifier.notify(
             {
@@ -196,7 +203,7 @@ function login() {
                 icon: path.join(app.getPath(`userData`), 'logo.png'),
                 sound: true, // Bool | String (as defined by http://msdn.microsoft.com/en-us/library/windows/apps/hh761492.aspx)
                 wait: true, // Bool. Wait for User Action against Notification or times out
-                appID: "com.deluuxe.DiscordChroma",
+                appID: "com.spooder.DiscordChroma",
             },
             function(error, response) {
                 log.info(response);
@@ -228,6 +235,12 @@ function login() {
                 }
             }
         );  
+
+    
+
+
+           refreshData()
+
     });
 
     //when you receive a message
@@ -240,7 +253,32 @@ function login() {
                         if(spamProtection == false){
                             log.info('NEW MESSAGE, in ' + message.guild.name + ".");
                             spamProtection = true;
+                            
                             messageAnimation();
+
+                            notifier.notify(
+                                {
+                                    title: `${message.author.tag} Sent You An Message In ${message.guild.name}`,
+                                    message: `${message.content}`,
+                                    icon: path.join(app.getPath(`userData`), 'logo.png'), //`https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.png`,
+                                    sound: true, // Bool | String (as defined by http://msdn.microsoft.com/en-us/library/windows/apps/hh761492.aspx)
+                                    wait: true, // Bool. Wait for User Action against Notification or times out
+                                    appID: "com.spooder.DiscordChroma",
+                                },
+                                function(error, response) {
+                                    log.info(response);
+                                    if (response == "the user clicked on the toast.") {
+                                        let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                                        settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
+                                        
+                                    } else {
+
+                                    }
+                                }
+                            );
+
+                            
+
                         } else {
                             log.info('NEW MESSAGE, in ' + message.guild.name + ", but ignored due to spam protection.");
                         }
@@ -254,6 +292,48 @@ function login() {
                     log.info('NEW DM');
                     spamProtection = true;
                     dmAnimation();
+
+                    let titleMEssage;
+                    
+                    let TitleGroupNull;
+
+                    if(message.channel.type == "group"){
+
+
+                        if(message.channel.name == null){
+                            TitleGroupNull = `${message.author.tag}`;
+                        } else {
+                            TitleGroupNull = `${message.channel.name}`;
+                        }
+
+
+                        titleMEssage = `${message.author.tag} Sent An Group Message In ${TitleGroupNull}`;
+                    } else {
+                        titleMEssage = `${message.author.tag} Sent You An DM`;
+                    }
+
+
+                    notifier.notify(
+                        {
+                            title: `${titleMEssage}`,
+                            message: `${message.content}`,
+                            icon: path.join(app.getPath(`userData`), 'logo.png'), //`https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.png`,
+                            sound: true, // Bool | String (as defined by http://msdn.microsoft.com/en-us/library/windows/apps/hh761492.aspx)
+                            wait: false, // Bool. Wait for User Action against Notification or times out
+                            appID: "com.spooder.DiscordChroma",
+                        },
+                        function(error, response) {
+                            log.info(response);
+                            if (response == "the user clicked on the toast.") {
+                                let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                                settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
+                                
+                            } else {
+
+                            }
+                        }
+                    );
+
                 } else {
                     log.info('NEW DM, but ignored due to spam protection.');
                 }
@@ -293,6 +373,9 @@ function login() {
         }*/
     });
 
+
+
+
     // ---------------------------------- discord.js ERROR section --------------------------------- \\
     client.on('error', err => {
         error1 = error1 + 1;
@@ -329,6 +412,46 @@ function login() {
     });
 }
 
+function refreshData()
+{
+
+
+    x = 2; 
+
+
+    //console.log(`Took S: ${userStatus} Current: ${client.user.settings.status}`);
+
+    if(userStatus !== `${client.user.settings.status}`){
+        //console.log(`${client.user.settings.status} is not ${userStatus} so i updated it it`);
+        
+        userStatus = client.user.settings.status;
+
+        if(client.user.settings.status == "online"){
+            notifierStuffStatusChange(`${client.user.settings.status}`);
+            ChangeToGreen()
+        }
+
+        if(client.user.settings.status == "idle"){
+            notifierStuffStatusChange(`${client.user.settings.status}`);
+            ChangeToOrange()
+        }
+
+        if(client.user.settings.status == "dnd"){
+            notifierStuffStatusChange(`${client.user.settings.status}`);
+            ChangeToRed()
+        }
+
+        if(client.user.settings.status == "invisible"){
+            notifierStuffStatusChange(`${client.user.settings.status}`);
+            ChangeToGray()
+        }
+
+    } else {
+        //console.log(`${client.user.settings.status} is ${userStatus}`);
+    }
+
+    setTimeout(refreshData, x*1000);
+}
 
 function authenticateDiscord() {
 
@@ -493,6 +616,114 @@ async function messageAnimation() {
     }
     instance.destroy();
     spamProtection = false;
+}
+
+async function ChangeToGreen() {
+    let instance = await chroma.Instance();
+    instance.playAnimation(new BcaAnimation(path.join(__dirname, '/BcaAnimations/statustogreem.bca')));
+    var r = 0;
+    var i = 0;
+    for(i;i<3;i++){
+        for(r; r<255; r++){
+            instance.Mouse.setAll(new Color(67,212,45));
+            await instance.send();
+            await sleep(1);
+        }
+        for(r; r>0; r--){
+            instance.Mouse.setAll(new Color(67,212,45));
+            await instance.send();
+            await sleep(1);
+        }
+    }
+    instance.destroy();
+    spamProtection = false;
+}
+
+
+async function ChangeToRed() {
+    let instance = await chroma.Instance();
+    instance.playAnimation(new BcaAnimation(path.join(__dirname, '/BcaAnimations/statustored.bca')));
+    var r = 0;
+    var i = 0;
+    for(i;i<3;i++){
+        for(r; r<255; r++){
+            instance.Mouse.setAll(new Color(255,0,0));
+            await instance.send();
+            await sleep(1);
+        }
+        for(r; r>0; r--){
+            instance.Mouse.setAll(new Color(255,0,0));
+            await instance.send();
+            await sleep(1);
+        }
+    }
+    instance.destroy();
+    spamProtection = false;
+}
+
+async function ChangeToGray() {
+    let instance = await chroma.Instance();
+    instance.playAnimation(new BcaAnimation(path.join(__dirname, '/BcaAnimations/statustogray.bca')));
+    var r = 0;
+    var i = 0;
+    for(i;i<3;i++){
+        for(r; r<255; r++){
+            instance.Mouse.setAll(new Color(58,56,54));
+            await instance.send();
+            await sleep(1);
+        }
+        for(r; r>0; r--){
+            instance.Mouse.setAll(new Color(58,56,54));
+            await instance.send();
+            await sleep(1);
+        }
+    }
+    instance.destroy();
+    spamProtection = false;
+}
+
+async function ChangeToOrange() {
+    let instance = await chroma.Instance();
+    instance.playAnimation(new BcaAnimation(path.join(__dirname, '/BcaAnimations/statustoornage.bca')));
+    var r = 0;
+    var i = 0;
+    for(i;i<3;i++){
+        for(r; r<255; r++){
+            instance.Mouse.setAll(new Color(245,166,35));
+            await instance.send();
+            await sleep(1);
+        }
+        for(r; r>0; r--){
+            instance.Mouse.setAll(new Color(245,166,35));
+            await instance.send();
+            await sleep(1);
+        }
+    }
+    instance.destroy();
+    spamProtection = false;
+}
+
+async function notifierStuffStatusChange(staus){
+    notifier.notify(
+        {
+            title: `Your Staus Was Updated!`,
+            message: `Changed To ${staus}`,
+            icon: path.join(app.getPath(`userData`), 'logo.png'), //`https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.png`,
+            sound: false, // Bool | String (as defined by http://msdn.microsoft.com/en-us/library/windows/apps/hh761492.aspx)
+            wait: false, // Bool. Wait for User Action against Notification or times out
+            appID: "com.spooder.DiscordChroma",
+        },
+        function(error, response) {
+            log.info(response);
+            if (response == "the user clicked on the toast.") {
+                let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
+                
+            } else {
+
+            }
+        }
+    );
 }
 
 //when a "global" error occurs
