@@ -56,9 +56,33 @@ if(!fs.existsSync(path.join(app.getPath(`userData`), 'config.json'))){
         "autoStart": false
     }
     fs.writeFileSync(path.join(app.getPath(`userData`), 'config.json'), JSON.stringify(config))
+    
 } else {
     config = JSON.parse(fs.readFileSync(path.join(app.getPath(`userData`), 'config.json')));
+    
 } 
+
+
+/*
+
+							let NoDataStart = [];
+						
+							NoDataStart.push({
+									id: `${UserId}`,
+
+							});
+						
+						
+							let FullDataEND = JSON.stringify(NoDataStart);
+
+
+							await fs.appendFile(`./data/site/userTokenS/${UserId}-${RandomNumber}.json`, FullDataEND, 'utf8', (err) => {
+								if (err) console.log(err);
+							});
+
+
+//FROM OLD PRODJECT MIGHT USE!
+*/
 
 //initiate log.txt
 log.transports.file.appName = 'DiscordChroma';
@@ -119,8 +143,8 @@ app.on('ready', function () {
 
         log.info("starting DiscordChroma");
         //show discordchroma rich presence
-        /*var invoked = false;
-        DiscordRP = childProcess.fork(path.join(__dirname, '/DiscordRP.js'));*/
+        var invoked = false;
+        DiscordRP = childProcess.fork(path.join(__dirname, '/DiscordRP.js'));
         //show splash/loading screen
         win = new BrowserWindow({width: 1000, height: 600, frame: false, show: false});
         win.loadURL(path.join('file://', __dirname, '/main.html'));
@@ -148,10 +172,10 @@ app.on('ready', function () {
                 }, 1000);
             })*/
                 //starting discordRP
-            /*if(!DiscordRP) {
+            if(!DiscordRP) {
                 DiscordRP = childProcess.fork(path.join(__dirname, '/DiscordRP.js'));
             }
-            settingswin.on('closed', function () {
+            /*settingswin.on('closed', function () {
                 //stop discord rich presence
                 DiscordRP.kill('SIGINT');
                 DiscordRP = null;
@@ -194,6 +218,10 @@ function login() {
     client.on('ready', () => {
         log.info(`Logged in as ` + client.user.tag);
         userStatus = client.user.settings.status;
+
+
+
+
         startupAnimation()
         //show running notification
         notifier.notify(
@@ -236,7 +264,11 @@ function login() {
             }
         );  
 
+
+            DiscordRP.kill('SIGINT');
+            DiscordRP = null;
     
+            //console.log(client.user);
 
 
            refreshData()
