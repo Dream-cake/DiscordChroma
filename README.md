@@ -13,3 +13,9 @@ You have been warned.
 #PLEASE READ
 
 This project is now being worked on by Spooder (Spooder#1111) with full permission from DELUUXE (DELUUXE#1608)
+
+#How to install
+
+1. Download The exe file ( [Click Here For File](https://github.com/Dream-cake/DiscordChroma/releases/latest) )
+2. Once downloaded it will ask you to login
+3. Your all done (just make sure you open it every time you start your pc!)!
