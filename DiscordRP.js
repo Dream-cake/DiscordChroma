@@ -14,7 +14,7 @@ async function setActivity() {
 
 
   rpc.setActivity({
-    details: `v0.4.8`,
+    details: `v0.4.9`,
     state: 'Starting Up!',
     startTimestamp,
     largeImageKey: 'logo512',
