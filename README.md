@@ -10,11 +10,11 @@ and my app would fall outside of their statement here Discord Support page,
 judge for your self.
 You have been warned.
 
-#PLEASE READ
+# PLEASE READ
 
 This project is now being worked on by Spooder (Spooder#1111) with full permission from DELUUXE (DELUUXE#1608)
 
-#How to install
+# How to install
 
 1. Download The exe file ( [Click Here For File](https://github.com/Dream-cake/DiscordChroma/releases/latest) )
 2. Once downloaded it will ask you to login
