@@ -36,6 +36,7 @@
         -webkit-background-clip: text;
         width: 98%;
         height: 98%;
+        text-align: center;
     }
 
     button {
@@ -92,6 +93,7 @@
     <div class="container">
         <div class="text">
             <h1>DiscordChroma Settings</h1>
+            <h3 id="UserHello"></h3>
             <br>
             <h2>General</h2>
             <p>Logout or change discord acount</p>
@@ -117,8 +119,8 @@
             <br>
             <!--<h2>Start on boot</h2>
             <p>Start DiscordChroma on system boot.</p>
-            <button id="toggleAutoStart" disabled>Status loading...</button>-->
-            <!--<p>Message alert color (hex color (without #)) (not working yet)</p>
+            <button id="toggleAutoStart" disabled>Status loading...</button>
+            <p>Message alert color (hex color (without #)) (not working yet)</p>
             <input type="text" value="ffffff" name="Message color" maxlength="6" id="colorpicker">
             <button id="confirmmsgcolor">Confirm color</button>
             <script>
@@ -130,8 +132,8 @@
                     var messagecolor = document.getElementById("colorpicker").value;
                     ipcRenderer.send('asynchronous-message', "msgcolor", messagecolor);
                 });
-            </script>-->
-            <br>
+            </script>
+            <br>-->
             <button style="margin-top:80px" id="exitbutton">Exit the app</button>
             <button style="margin-top:80px" id="closesettings">Close settings</button>
             <script>  
@@ -143,6 +145,22 @@
                     //ipcRenderer.send('asynchronous-message', "closesettings");
                     window.close();
                 });
+
+                DataPLZZ = async () => {
+
+                    
+
+                    let DataFromSite = await (await fetch(`http://localhost:7896/`)).json();
+
+                    UserHello = document.getElementById("UserHello");
+
+                    UserHello.innerHTML = UserHello.innerHTML + `Welcome ${DataFromSite.username}!`;
+
+
+                };
+
+                DataPLZZ();
+                
             </script>
         </div>
     </div>

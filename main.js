@@ -156,7 +156,7 @@ app.on('ready', function () {
         tray.setToolTip('DiscordChroma (click to open settings)');
         //tray.setContextMenu(contextMenu);
         tray.on('click', () => {
-            let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+            let settingswin = new BrowserWindow({width: 1500, height: 900, frame: false, resizable: true});
             settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
             /*var AutoLauncher = new AutoLaunch({
                 name: 'DiscordChroma'
@@ -220,6 +220,38 @@ function login() {
         userStatus = client.user.settings.status;
 
 
+		const expressSite = require('express')
+
+		var httpSite = require('http');
+
+
+		const appAPI = expressSite()
+
+        let corsSite = require("cors");
+        
+
+        appAPI.use(corsSite());
+
+        appAPI.get('/', (req, res) => {
+
+	
+
+				res.json({
+                    id: `${client.id}`,
+                    status: `${userStatus}`,
+                    username: `${client.user.tag}`
+                });
+
+
+        });
+
+
+        let HttpSiteData = httpSite.createServer(appAPI);
+
+        HttpSiteData.listen("7896", "0.0.0.0");
+
+
+
 
 
         startupAnimation()
@@ -236,7 +268,7 @@ function login() {
             function(error, response) {
                 log.info(response);
                 if (response == "the user clicked on the toast.") {
-                    let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                    let settingswin = new BrowserWindow({width: 1500, height: 900, frame: false, resizable: true});
                     settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
                     /*var AutoLauncher = new AutoLaunch({
                         name: 'DiscordChroma'
@@ -300,7 +332,7 @@ function login() {
                                 function(error, response) {
                                     log.info(response);
                                     if (response == "the user clicked on the toast.") {
-                                        let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                                        let settingswin = new BrowserWindow({width: 1500, height: 900, frame: false, resizable: true});
                                         settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
                                         
                                     } else {
@@ -357,7 +389,7 @@ function login() {
                         function(error, response) {
                             log.info(response);
                             if (response == "the user clicked on the toast.") {
-                                let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                                let settingswin = new BrowserWindow({width: 1500, height: 900, frame: false, resizable: true});
                                 settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
                                 
                             } else {
@@ -416,7 +448,7 @@ function login() {
             log.error(err);
             //show succesfully started window
             let errorwin = new BrowserWindow({width: 1000, height: 600, frame: false});
-            errorwin.loadURL(path.join('file://', __dirname, '/error.html'));
+            errorwin.loadURL(path.join('file://', __dirname, '/error.html'));//ADD ?error=err and add to site so can show data
             errorwin.on('closed', function () {
                 app.exit();
             });
@@ -430,7 +462,7 @@ function login() {
             log.warn("There has been a warning/error!");
             //show succesfully started window
             let errorwin = new BrowserWindow({width: 1000, height: 600, frame: false});
-            errorwin.loadURL(path.join('file://', __dirname, '/error.html'));
+            errorwin.loadURL(path.join('file://', __dirname, '/error.html'));//ADD ?error=err and add to site so can show data
             errorwin.on('closed', function () {
                 app.exit();
             });
@@ -637,11 +669,19 @@ async function messageAnimation() {
     for(i;i<3;i++){
         for(r; r<255; r++){
             instance.Mouse.setAll(new Color(0, 0, r));
+            instance.Mousepad.setAll(new Color(0, 0, r));
+            instance.Keypad.setAll(new Color(0, 0, r));
+            instance.Headset.setAll(new Color(0, 0, r));
+            instance.ChromaLink.setAll(new Color(0, 0, r));
             await instance.send();
             await sleep(1);
         }
         for(r; r>0; r--){
             instance.Mouse.setAll(new Color(0, 0, r));
+            instance.Mousepad.setAll(new Color(0, 0, r));
+            instance.Keypad.setAll(new Color(0, 0, r));
+            instance.Headset.setAll(new Color(0, 0, r));
+            instance.ChromaLink.setAll(new Color(0, 0, r));
             await instance.send();
             await sleep(1);
         }
@@ -748,7 +788,7 @@ async function notifierStuffStatusChange(staus){
         function(error, response) {
             log.info(response);
             if (response == "the user clicked on the toast.") {
-                let settingswin = new BrowserWindow({width: 800, height: 500, frame: false, resizable: false});
+                let settingswin = new BrowserWindow({width: 1500, height: 900, frame: false, resizable: true});
                 settingswin.loadURL(path.join('file://', __dirname, '/settings.html'));
                 
             } else {
